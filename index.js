@@ -19,10 +19,13 @@ e=>console.log(`error`,e))
 
 
 
-
+// configure routes 
 const subscribersRouter = require('./routes/nwd-subscribers')
+const subscribersWaterRouter = require('./routes/water-rate-subscribers')
+
 app.use(bodyParser.json())
 app.use('/nwd',subscribersRouter)
+app.use('/water',subscribersWaterRouter)
 
 
 

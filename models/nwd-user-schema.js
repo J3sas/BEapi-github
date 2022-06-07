@@ -56,7 +56,7 @@ const userSchema = new Schema({
     paidBillInfo : {
         type :Array
     }
-});
+},{ timestamps: true });
 
 
 
