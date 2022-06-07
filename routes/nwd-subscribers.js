@@ -5,14 +5,61 @@ const User = require("../models/nwd-user-schema")
 
 
 // ----- Routes
-router.get('/',(req,res)=>{
-    res.send('Hello world')
+
+//  GET ALL
+router.get('/',async(req,res)=>{
+    res.send(await User.find({}));
 })
 
+//  GET ID
 router.get('/:id',getUserId,(req,res)=>{
     res.json(res.user)
 })
 
+//  Create one
+router.post("/create", async (req, res) => {
+    const user = new User(req.body)
+    await user.save()
+        .then((result) => {
+            res.send(result)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+});
+// delete using whole json
+router.delete('/delete',async(req,res)=>{ 
+    await User.findByIdAndDelete(req.body)
+    .then((result) => {
+        res.send(result)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+})
+
+
+// delete using ID
+router.delete('/:id',async(req,res)=>{ 
+    await User.findByIdAndDelete(req.params.id)
+    .then((result) => {
+        res.send(result)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+})
+
+router.patch('/:userId',async(req,res)=>{
+    try {
+        const oldData = await User.findById(req.params.userId)
+        Object.assign(oldData,req.body)
+        oldData.save()
+        res.send({message : 'Success'})
+    } catch (error) {
+        res.send(error)
+    }
+})
 
 // ----- Middlewares
 
