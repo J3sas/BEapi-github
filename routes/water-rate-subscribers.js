@@ -11,12 +11,14 @@ router.get('/',async(req,res)=>{
     res.send(await WaterRate.find({}));
 })
 
-router.patch('/:userId',async(req,res)=>{
+router.patch('/',async(req,res)=>{
     try {
-        const oldData = await WaterRate.findById(req.params.userId)
+        const oldData = await WaterRate.findById(req.body._id)
         Object.assign(oldData,req.body)
         oldData.save()
-        res.send(res)
+        .then((result) => {
+            res.send(result)
+        })
     } catch (error) {
         res.send(error)
     }

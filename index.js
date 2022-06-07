@@ -20,12 +20,15 @@ e=>console.log(`error`,e))
 
 
 // configure routes 
-const subscribersRouter = require('./routes/nwd-subscribers')
+const subscribersNwdUsersRouter = require('./routes/nwd-users-subscribers')
 const subscribersWaterRouter = require('./routes/water-rate-subscribers')
+const subscribersEcomm = require('./routes/ecomm-users-subscribers')
+const subscribersEcommProducts = require('./routes/ecomm-products-subscribers')
 
 app.use(bodyParser.json())
-app.use('/nwd',subscribersRouter)
+app.use('/nwd',subscribersNwdUsersRouter)
 app.use('/water',subscribersWaterRouter)
-
+app.use('/ecomm-users',subscribersEcomm)
+app.use('/ecomm-products',subscribersEcommProducts)
 
 

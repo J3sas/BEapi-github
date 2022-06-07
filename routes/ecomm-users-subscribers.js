@@ -1,14 +1,14 @@
 require('dotenv').config()
 const express = require('express')
 const router = express.Router()
-const User = require("../models/nwd-user-schema")
+const EcommUser = require("../models/ecomm-user-schema")
 
 
 // ----- Routes
 
 //  GET ALL
 router.get('/',async(req,res)=>{
-    res.send(await User.find({}));
+    res.send(await EcommUser.find({}));
 })
 
 //  GET ID
@@ -17,8 +17,8 @@ router.get('/:id',getUserId,(req,res)=>{
 })
 
 //  Create one
-router.post("/create", async (req, res) => {
-    const user = new User(req.body)
+router.post("/", async (req, res) => {
+    const user = new EcommUser(req.body)
     await user.save()
         .then((result) => {
             res.send(result)
@@ -28,20 +28,20 @@ router.post("/create", async (req, res) => {
         })
 });
 // delete using whole json
-router.delete('/delete',async(req,res)=>{ 
-    await User.findByIdAndDelete(req.body)
-    .then((result) => {
-        res.send(result)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
-})
+// router.delete('/delete',async(req,res)=>{ 
+//     await EcommUser.findByIdAndDelete(req.body)
+//     .then((result) => {
+//         res.send(result)
+//     })
+//     .catch((err) => {
+//         console.log(err)
+//     })
+// })
 
 
 // delete using ID
-router.delete('/:id',async(req,res)=>{ 
-    await User.findByIdAndDelete(req.params.id)
+router.delete('/',async(req,res)=>{ 
+    await EcommUser.findByIdAndDelete(req.body._id)
     .then((result) => {
         res.send(result)
     })
@@ -50,12 +50,14 @@ router.delete('/:id',async(req,res)=>{
     })
 })
 
-router.patch('/:userId',async(req,res)=>{
+router.patch('/',async(req,res)=>{
     try {
-        const oldData = await User.findById(req.params.userId)
+        const oldData = await EcommUser.findById(req.body._id)
         Object.assign(oldData,req.body)
         oldData.save()
-        res.send({message : 'Success'})
+        .then((result) => {
+            res.send(result)
+        })
     } catch (error) {
         res.send(error)
     }
@@ -67,7 +69,7 @@ router.patch('/:userId',async(req,res)=>{
 async function getUserId(req,res,next){
     let user
     try {
-        user = await User.findById(req.params.id)
+        user = await EcommUser.findById(req.params.id)
         if (user == null) {
             return res.status(404).json({message : 'Cannot find user'})
         }
