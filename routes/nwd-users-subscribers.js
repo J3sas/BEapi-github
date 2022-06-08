@@ -11,16 +11,18 @@ router.get('/',async(req,res)=>{
     
     try {
         const found = await User.find({})
-        res.send(found)
+        res.send(payloadFormatter(found))
     } catch (error) {
         res.send(error)
     }
 })
 
+
 //  GET ID
 router.get('/:id',getUserId,(req,res)=>{
     try {
-        res.send(res.user)
+
+        res.send(payloadFormatter(res.user))
     } catch (error) {
         res.send(error)
     }
@@ -33,7 +35,7 @@ router.post("/", async (req, res) => {
         const user = new User(req.body)
         await user.save()
         .then((result) => {
-            res.send(result)
+            res.send(payloadFormatter(result))
         })
         .catch((err) => {
             res.send(err)
@@ -57,9 +59,9 @@ router.post("/", async (req, res) => {
 
 // delete using ID
 router.delete('/',async(req,res)=>{ 
-    await User.findByIdAndDelete(req.body._id)
+    await User.findByIdAndDelete(req.body.id)
     .then((result) => {
-        res.send(result)
+        res.send(payloadFormatter(result))
     })
     .catch((err) => {
         res.send({message : 'DB Failed',err })
@@ -71,11 +73,11 @@ router.delete('/',async(req,res)=>{
 
 router.patch('/',async(req,res)=>{
     try {
-        const oldData = await User.findById(req.body._id)
+        const oldData = await User.findById(req.body.id)
         Object.assign(oldData,req.body)
         oldData.save()
         .then((result) => {
-            res.send(result)
+            res.send(payloadFormatter(result))
         })
         .catch((err) => {
             res.send({message : 'DB Failed',err })
@@ -100,6 +102,66 @@ async function getUserId(req,res,next){
     }
     res.user = user
     next()
+}
+
+function payloadFormatter(arrayFromDb) {
+    // re format the response 
+    let tempUserArray = []
+    if (arrayFromDb.length >= 1) {
+        for (let index = 0; index < arrayFromDb.length; index++) {
+            let _id = arrayFromDb[index]._id
+            let name = arrayFromDb[index].name
+            let address = arrayFromDb[index].address
+            let accountNum = arrayFromDb[index].accountNum
+            let rateClass = arrayFromDb[index].rateClass
+            let meterNum = arrayFromDb[index].meterNum
+            let prevRdgDate = arrayFromDb[index].prevRdgDate
+            let balancePrevBill = arrayFromDb[index].balancePrevBill
+            let totalCurrBill = arrayFromDb[index].totalCurrBill
+            let accountType = arrayFromDb[index].accountType
+            let billInfo = arrayFromDb[index].billInfo
+            let prevReading = arrayFromDb[index].prevReading
+            let hasActiveBill = arrayFromDb[index].hasActiveBill
+            let hasReqPayment = arrayFromDb[index].hasReqPayment
+            let paidBillInfo = arrayFromDb[index].paidBillInfo
+            const objResponse = { id : _id,
+                                 name : name,
+                                 address : address,
+                                 accountNum : accountNum,
+                                 rateClass : rateClass,
+                                 meterNum : meterNum,
+                                 prevRdgDate : prevRdgDate,
+                                 balancePrevBill : balancePrevBill,
+                                 totalCurrBill : totalCurrBill,
+                                 accountType : accountType,
+                                 billInfo : billInfo,
+                                 prevReading : prevReading,
+                                 hasActiveBill : hasActiveBill,
+                                 hasReqPayment : hasReqPayment,
+                                 paidBillInfo : paidBillInfo,
+                                }
+            tempUserArray.push(objResponse)
+        }
+    return tempUserArray
+    }else{
+        return  objResponse = { id : arrayFromDb._id,
+            name : arrayFromDb.name,
+            address : arrayFromDb.address,
+            accountNum : arrayFromDb.accountNum,
+            rateClass : arrayFromDb.rateClass,
+            meterNum : arrayFromDb.meterNum,
+            prevRdgDate : arrayFromDb.prevRdgDate,
+            balancePrevBill : arrayFromDb.balancePrevBill,
+            totalCurrBill : arrayFromDb.totalCurrBill,
+            accountType : arrayFromDb.accountType,
+            billInfo : arrayFromDb.billInfo,
+            prevReading : arrayFromDb.prevReading,
+            hasActiveBill : arrayFromDb.hasActiveBill,
+            hasReqPayment : arrayFromDb.hasReqPayment,
+            paidBillInfo : arrayFromDb.paidBillInfo,
+           }
+    }
+        
 }
 
 

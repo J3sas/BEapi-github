@@ -8,12 +8,19 @@ const EcommProduct = require("../models/ecomm-products-schema")
 
 //  GET ALL
 router.get('/',async(req,res)=>{
-    res.send(await EcommProduct.find({}));
+    try {
+        const found = await EcommProduct.find({})
+        
+        res.send(payloadFormatter(found));
+    } catch (error) {
+        res.send(error);
+    }
+    
 })
 
 //  GET ID
 router.get('/:id',getUserId,(req,res)=>{
-    res.json(res.user)
+    res.json(payloadFormatter(res.user))
 })
 
 //  Create one
@@ -22,7 +29,7 @@ router.post("/", async (req, res) => {
         const user = new EcommProduct(req.body)
     await user.save()
         .then((result) => {
-            res.send(result)
+            res.send(payloadFormatter(result))
         })
         .catch((err) => {
             res.send(err)
@@ -46,9 +53,9 @@ router.post("/", async (req, res) => {
 
 // delete using ID
 router.delete('/',async(req,res)=>{ 
-    await EcommProduct.findByIdAndDelete(req.body._id)
+    await EcommProduct.findByIdAndDelete(req.body.id)
     .then((result) => {
-        res.send(result)
+        res.send(payloadFormatter(result))
     })
     .catch((err) => {
         res.send(err)
@@ -57,11 +64,11 @@ router.delete('/',async(req,res)=>{
 
 router.patch('/',async(req,res)=>{
     try {
-        const oldData = await EcommProduct.findById(req.body._id)
+        const oldData = await EcommProduct.findById(req.body.id)
         Object.assign(oldData,req.body)
         oldData.save()
         .then((result) => {
-            res.send(result)
+            res.send(payloadFormatter(result))
         })
         .catch((err) => {
             res.send(err)
@@ -86,6 +93,44 @@ async function getUserId(req,res,next){
     }
     res.user = user
     next()
+}
+
+function payloadFormatter(arrayFromDb) {
+    // re format the response 
+    let tempUserArray = []
+    if (arrayFromDb.length >= 1) {
+        for (let index = 0; index < arrayFromDb.length; index++) {
+            let _id = arrayFromDb[index]._id
+            let name = arrayFromDb[index].name
+            let price = arrayFromDb[index].price
+            let quantity = arrayFromDb[index].quantity
+            let description = arrayFromDb[index].description
+            let imageSource = arrayFromDb[index].imageSource
+            let ownerId = arrayFromDb[index].ownerId
+
+            const objResponse = { id : _id,
+                                 name : name,
+                                 price : price,
+                                 quantity : quantity,
+                                 description : description,
+                                 imageSource : imageSource,
+                                 ownerId : ownerId
+                                }
+            tempUserArray.push(objResponse)
+        }
+    return tempUserArray
+    }else{
+        return  objResponse = { 
+            id : arrayFromDb._id,
+            name : arrayFromDb.name,
+            price : arrayFromDb.price,
+            quantity : arrayFromDb.quantity,
+            description : arrayFromDb.description,
+            imageSource : arrayFromDb.imageSource,
+            ownerId : arrayFromDb.ownerId
+           }
+    }
+        
 }
 
 
