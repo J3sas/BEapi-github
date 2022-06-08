@@ -19,6 +19,9 @@ router.patch('/',async(req,res)=>{
         .then((result) => {
             res.send(result)
         })
+        .catch((err) => {
+            res.send({message : 'DB Failed',err })
+        })
     } catch (error) {
         res.send(error)
     }

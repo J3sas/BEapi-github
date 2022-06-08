@@ -18,14 +18,19 @@ router.get('/:id',getUserId,(req,res)=>{
 
 //  Create one
 router.post("/", async (req, res) => {
-    const user = new EcommProduct(req.body)
+    try {
+        const user = new EcommProduct(req.body)
     await user.save()
         .then((result) => {
             res.send(result)
         })
         .catch((err) => {
-            console.log(err)
+            res.send(err)
         })
+    } catch (error) {
+        res.send(error)
+    }
+    
 });
 // delete using whole json
 // router.delete('/delete',async(req,res)=>{ 
@@ -46,7 +51,7 @@ router.delete('/',async(req,res)=>{
         res.send(result)
     })
     .catch((err) => {
-        console.log(err)
+        res.send(err)
     })
 })
 
@@ -57,6 +62,9 @@ router.patch('/',async(req,res)=>{
         oldData.save()
         .then((result) => {
             res.send(result)
+        })
+        .catch((err) => {
+            res.send(err)
         })
     } catch (error) {
         res.send(error)

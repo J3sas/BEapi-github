@@ -8,24 +8,40 @@ const User = require("../models/nwd-user-schema")
 
 //  GET ALL
 router.get('/',async(req,res)=>{
-    res.send(await User.find({}));
+    
+    try {
+        const found = await User.find({})
+        res.send(found)
+    } catch (error) {
+        res.send(error)
+    }
 })
 
 //  GET ID
 router.get('/:id',getUserId,(req,res)=>{
-    res.json(res.user)
+    try {
+        res.send(res.user)
+    } catch (error) {
+        res.send(error)
+    }
+    
 })
 
 //  Create one
 router.post("/", async (req, res) => {
-    const user = new User(req.body)
-    await user.save()
+    try {
+        const user = new User(req.body)
+        await user.save()
         .then((result) => {
             res.send(result)
         })
         .catch((err) => {
-            console.log(err)
+            res.send(err)
         })
+    } catch (error) {
+        res.send(err)
+    }
+    
 });
 // delete using whole json
 // router.delete('/',async(req,res)=>{ 
@@ -46,7 +62,10 @@ router.delete('/',async(req,res)=>{
         res.send(result)
     })
     .catch((err) => {
-        console.log(err)
+        res.send({message : 'DB Failed',err })
+    })
+    .catch((err) => {
+        res.send(err)
     })
 })
 
@@ -58,9 +77,12 @@ router.patch('/',async(req,res)=>{
         .then((result) => {
             res.send(result)
         })
+        .catch((err) => {
+            res.send({message : 'DB Failed',err })
+        })
     } catch (error) {
-        res.send(error)
-    }
+        res.send({message : 'error',error })
+    } 
 })
 
 // ----- Middlewares
@@ -74,7 +96,7 @@ async function getUserId(req,res,next){
             return res.status(404).json({message : 'Cannot find user'})
         }
     } catch (error) {
-        return res.status(500).json({message : error.message})
+        return res.status(500).json({message : error})
     }
     res.user = user
     next()

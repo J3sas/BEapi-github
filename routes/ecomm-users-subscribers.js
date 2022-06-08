@@ -18,14 +18,19 @@ router.get('/:id',getUserId,(req,res)=>{
 
 //  Create one
 router.post("/", async (req, res) => {
-    const user = new EcommUser(req.body)
+    try {
+        const user = new EcommUser(req.body)
     await user.save()
         .then((result) => {
             res.send(result)
         })
         .catch((err) => {
-            console.log(err)
+            res.send(err)
         })
+    } catch (error) {
+        res.send(error)
+    }
+    
 });
 // delete using whole json
 // router.delete('/delete',async(req,res)=>{ 
@@ -41,13 +46,18 @@ router.post("/", async (req, res) => {
 
 // delete using ID
 router.delete('/',async(req,res)=>{ 
-    await EcommUser.findByIdAndDelete(req.body._id)
-    .then((result) => {
-        res.send(result)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
+    try {
+        await EcommUser.findByIdAndDelete(req.body._id)
+        .then((result) => {
+            res.send(result)
+        })
+        .catch((err) => {
+            res.send(err)
+        })
+    } catch (error) {
+        res.send(err)
+    }
+   
 })
 
 router.patch('/',async(req,res)=>{
@@ -57,6 +67,9 @@ router.patch('/',async(req,res)=>{
         oldData.save()
         .then((result) => {
             res.send(result)
+        })
+        .catch((err) => {
+            res.send(err)
         })
     } catch (error) {
         res.send(error)
