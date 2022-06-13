@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 
 const port = process.env.PORT || 3000
@@ -25,6 +26,7 @@ const subscribersWaterRouter = require('./routes/water-rate-subscribers')
 const subscribersEcomm = require('./routes/ecomm-users-subscribers')
 const subscribersEcommProducts = require('./routes/ecomm-products-subscribers')
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use('/nwd',subscribersNwdUsersRouter)
 app.use('/water',subscribersWaterRouter)
