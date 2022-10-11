@@ -111,6 +111,7 @@ function payloadFormatter(arrayFromDb) {
         for (let index = 0; index < arrayFromDb.length; index++) {
             let _id = arrayFromDb[index]._id
             let name = arrayFromDb[index].name
+            let password = arrayFromDb[index].password
             let address = arrayFromDb[index].address
             let accountNum = arrayFromDb[index].accountNum
             let rateClass = arrayFromDb[index].rateClass
@@ -126,6 +127,7 @@ function payloadFormatter(arrayFromDb) {
             let paidBillInfo = arrayFromDb[index].paidBillInfo
             const objResponse = { id : _id,
                                  name : name,
+                                 password : password,
                                  address : address,
                                  accountNum : accountNum,
                                  rateClass : rateClass,
@@ -146,6 +148,7 @@ function payloadFormatter(arrayFromDb) {
     }else{
         return  objResponse = { id : arrayFromDb._id,
             name : arrayFromDb.name,
+            password : arrayFromDb.password,
             address : arrayFromDb.address,
             accountNum : arrayFromDb.accountNum,
             rateClass : arrayFromDb.rateClass,
